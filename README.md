@@ -1,65 +1,144 @@
 # Internship Application Tracker – Redis Extension
 
 ## Overview
-This project extends the Internship Application Tracker by adding a Redis-based in-memory component for managing active applications.
 
-The Redis extension supports fast access to a student’s active internship applications and allows users to create, read, update, and delete application records efficiently.
+This project extends the Internship Application Tracker by integrating Redis as an in-memory data store to efficiently manage active internship applications.
 
-## Redis Functionality
-The selected Redis functionality is an **Active Application Dashboard**.
+The system leverages Redis data structures to support fast read/write operations and real-time updates. It allows users to create, retrieve, update, and delete internship applications, as well as track applications by student and application status.
 
-This feature allows the system to:
-- store active applications for each student in memory,
-- retrieve one application quickly,
-- retrieve all applications for a student,
-- update the current application status,
-- delete an application from the active application tracker.
+---
+
+## Features
+
+- Create internship applications
+- Retrieve a specific application
+- Retrieve all applications for a student
+- Update application status
+- Delete applications
+- Efficient in-memory data handling using Redis
+
+---
 
 ## Redis Data Structures Used
-The system uses the following Redis data structures:
 
-### 1. Hash
-Used to store one individual application.
+- **Hash**
+  - Key: `application:{app_id}`
+  - Stores all application details (student_id, job_id, company_name, etc.)
 
-Example key:
-`application:1001`
+- **Sorted Set**
+  - Key: `student:{student_id}:applications`
+  - Stores application IDs ordered by submission time
 
-### 2. Sorted Set
-Used to store all applications for one student ordered by submission date.
+- **Set**
+  - Key: `student:{student_id}:status:{status}`
+  - Groups applications by status (e.g., applied, interviewing)
 
-Example key:
-`student:1:applications`
+---
 
-### 3. Set
-Used to group applications by current status.
-
-Example key:
-`student:1:status:applied`
-
-## Technologies Used
-- Node.js
-- Express
-- Redis
-
-## Routes Implemented
+## API Endpoints
 
 ### Create Application
-`POST /applications`
+POST /applications
 
-### Get One Application
-`GET /applications/:app_id`
+### Get Application by ID
+GET /applications/:app_id
 
-### Get All Applications for One Student
-`GET /students/:student_id/applications`
+### Get All Applications for a Student
+GET /students/:student_id/applications
 
 ### Update Application Status
-`PUT /applications/:app_id/status`
+PUT /applications/:app_id/status
 
 ### Delete Application
-`DELETE /applications/:app_id`
+DELETE /applications/:app_id
+
+---
+
+## Example Usage
+
+### Create Application
+
+curl -X POST http://localhost:3000/applications \
+-H "Content-Type: application/json" \
+-d '{"app_id":"1001","student_id":"1","job_id":"501","company_name":"Google","job_title":"Software Engineering Intern","submission_date":"2026-04-19","current_status":"applied"}'
+
+---
+
+### Get Application
+
+curl http://localhost:3000/applications/1001
+
+---
+
+### Get Student Applications
+
+curl http://localhost:3000/students/1/applications
+
+---
+
+### Update Status
+
+curl -X PUT http://localhost:3000/applications/1001/status \
+-H "Content-Type: application/json" \
+-d '{"new_status":"interviewing"}'
+
+---
+
+### Delete Application
+
+curl -X DELETE http://localhost:3000/applications/1001
+
+---
 
 ## How to Run the Project
 
-### 1. Install dependencies
-```bash
+1. Install dependencies:
 npm install
+
+2. Start Redis server:
+redis-server
+
+3. Run the application:
+node app.js
+
+4. Server runs at:
+http://localhost:3000
+
+---
+
+## Project Structure
+
+app.js                  # Express server with Redis integration  
+data_structures.md      # Explanation of Redis data structures  
+redis_commands.md       # Redis commands used in the project  
+requirements.md         # Functional requirements  
+uml_redis_addition.md   # UML / conceptual model description  
+redis_conceptual_model.png  # Diagram  
+
+---
+
+## Design Decisions
+
+- Redis is used as the primary storage for active applications to enable fast access
+- Hashes store detailed application data for easy retrieval
+- Sorted Sets allow ordering applications by submission time
+- Sets enable efficient grouping by application status
+- The design minimizes lookup time and avoids complex joins
+
+---
+
+## Author
+
+Xiaodi Wang
+
+---
+
+## AI Usage Disclosure
+
+AI tools (ChatGPT) were used for guidance in:
+
+- Understanding Redis data structures
+- Designing API endpoints
+- Debugging implementation issues
+
+All final implementation and understanding were completed by the author.
