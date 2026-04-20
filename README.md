@@ -127,6 +127,26 @@ redis_conceptual_model.png  # Diagram
 
 ---
 
+## Design Explanation
+
+This system uses Redis as an in-memory data store to optimize performance for active internship tracking.
+
+Applications are stored as Hashes for quick access to detailed information. Sorted Sets are used to maintain application ordering by submission time, allowing efficient retrieval of recent applications. Sets are used to group applications by status, enabling fast filtering and updates.
+
+This design minimizes lookup time and avoids complex joins typically required in relational databases.
+
+---
+
+## Why Redis
+
+Redis is used in this extension to handle active application data that requires fast access and frequent updates.
+
+Compared to MongoDB, Redis provides lower latency and is better suited for real-time operations such as status updates and quick lookups.
+
+This makes Redis ideal for managing active, frequently accessed application data.
+
+---
+
 ## Author
 
 Xiaodi Wang
@@ -137,8 +157,8 @@ Xiaodi Wang
 
 AI tools (ChatGPT) were used for guidance in:
 
-- Understanding Redis data structures
-- Designing API endpoints
-- Debugging implementation issues
+- Understanding Redis data structures  
+- Designing API endpoints  
+- Debugging implementation issues  
 
 All final implementation and understanding were completed by the author.
